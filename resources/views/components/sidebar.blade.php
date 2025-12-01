@@ -11,8 +11,8 @@
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
                 <ul class="dropdown-menu">
-                    <li class='{{ Request::is('dashboard-general-dashboard') ? 'active' : '' }}'>
-                        <a class="nav-link" href="{{ url('dashboard-general-dashboard') }}">General Dashboard</a>
+                    <li class='{{ Request::is('home') ? 'active' : '' }}'>
+                        <a class="nav-link" href="{{ route('home') }}">General Dashboard</a>
                     </li>
 
                 </ul>
@@ -22,7 +22,7 @@
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Users</span></a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="nav-link" href="{{ route('user.index') }}">All Users</a>
+                        <a class="nav-link" href="{{ route('user.index') }}">Dashboard</a>
                     </li>
 
                 </ul>

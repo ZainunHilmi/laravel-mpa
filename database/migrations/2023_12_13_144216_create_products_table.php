@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,16 +13,14 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            //description
             $table->text('description')->nullable();
-            //price
-            $table->integer('price')->default(0);
-            //stock
-            $table->integer('stock')->default(0);
-            //category enum (food, drink, snack)
+            $table->string('rules')->nullable();
+            $table->decimal('price', 12, 2)->default(0);
+            $table->string('sku')->unique();
+            $table->integer('stock');
             $table->enum('category', ['food', 'drink', 'snack']);
-            //image
             $table->string('image')->nullable();
+            $table->boolean('is_favorite')->default(false);
             $table->timestamps();
         });
     }

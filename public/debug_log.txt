@@ -1,0 +1,12 @@
+Method: POST
+URI: /api/login
+Method: POST
+URI: /api/login
+Method: GET
+URI: /
+Method: GET
+URI: /api/login
+Method: POST
+URI: /api/login
+Method: GET
+URI: /

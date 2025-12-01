@@ -18,6 +18,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// post register
+Route::post('register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
+
+// post login
+// post login
 // post login
 Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 
@@ -26,6 +31,9 @@ Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout'
 
 // api resource product
 Route::apiResource('products', \App\Http\Controllers\Api\ProductController::class)->middleware('auth:sanctum');
+
+// api resource users
+Route::apiResource('users', \App\Http\Controllers\Api\UserController::class)->middleware('auth:sanctum');
 
 // api resource order
 Route::apiResource('orders', \App\Http\Controllers\Api\OrderController::class)->middleware('auth:sanctum');

@@ -9,14 +9,11 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        //get data products
-        $products = DB::table('products')
-            ->when($request->input('name'), function ($query, $name) {
-                return $query->where('name', 'like', '%' . $name . '%');
-            })
+        $products = \App\Models\Product::when($request->input('name'), function ($query, $name) {
+            return $query->where('name', 'like', '%' . $name . '%');
+        })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        //sort by created_at desc
 
         return view('pages.products.index', compact('products'));
     }
@@ -30,22 +27,28 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|min:3|unique:products',
-            'price' => 'required|integer',
-            'stock' => 'required|integer',
+            'description' => 'nullable|string',
+            'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
             'category' => 'required|in:food,drink,snack',
-            'image' => 'required|image|mimes:png,jpg,jpeg'
+            'image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);
-
-        $filename = time() . '.' . $request->image->extension();
-        $request->image->storeAs('public/products', $filename);
-        $data = $request->all();
 
         $product = new \App\Models\Product;
         $product->name = $request->name;
+        $product->description = $request->description;
         $product->price = (int) $request->price;
         $product->stock = (int) $request->stock;
         $product->category = $request->category;
-        $product->image = $filename;
+        $product->is_favorite = $request->has('is_favorite') ? (bool) $request->is_favorite : false;
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $filename = time() . '.' . $request->image->extension();
+            $request->image->storeAs('public/products', $filename);
+            $product->image = $filename;
+        }
+
         $product->save();
 
         return redirect()->route('product.index')->with('success', 'Product successfully created');
@@ -59,8 +62,38 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $data = $request->all();
         $product = \App\Models\Product::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|min:3|unique:products,name,' . $id,
+            'description' => 'nullable|string',
+            'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
+            'category' => 'required|in:food,drink,snack',
+            'image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => (int) $request->price,
+            'stock' => (int) $request->stock,
+            'category' => $request->category,
+            'is_favorite' => $request->has('is_favorite') ? (bool) $request->is_favorite : $product->is_favorite,
+        ];
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($product->image && \Storage::exists('public/products/' . $product->image)) {
+                \Storage::delete('public/products/' . $product->image);
+            }
+
+            $filename = time() . '.' . $request->image->extension();
+            $request->image->storeAs('public/products', $filename);
+            $data['image'] = $filename;
+        }
+
         $product->update($data);
         return redirect()->route('product.index')->with('success', 'Product successfully updated');
     }

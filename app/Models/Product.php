@@ -15,10 +15,12 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
+        'rules',
         'price',
+        'sku',
         'stock',
         'category',
         'image',
-        'is_best_seller'
+        'is_favorite',
     ];
 }

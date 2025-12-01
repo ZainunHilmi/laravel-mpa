@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -27,12 +28,17 @@ class UserController extends Controller
         return view('pages.users.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $data = $request->all();
+        $data = $request->validated();
         $data['password'] = Hash::make($request->password);
         \App\Models\User::create($data);
         return redirect()->route('user.index')->with('success', 'User successfully created');
+    }
+
+    public function show($id)
+    {
+        return redirect()->route('user.index');
     }
 
     public function edit($id)
