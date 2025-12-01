@@ -29,7 +29,6 @@ Thumbs.db
 
 # Laravel
 /storage/*.key
-/vendor
 /public/hot
 /public/storage
 
