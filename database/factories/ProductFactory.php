@@ -21,7 +21,9 @@ class ProductFactory extends Factory
             'description' => $this->faker->text,
             'price' => $this->faker->numberBetween(10000, 100000),
             'stock' => $this->faker->numberBetween(1, 100),
+            'sku' => $this->faker->unique()->bothify('SKU-####'),
             'category' => $this->faker->randomElement(['food', 'drink', 'snack']),
+
         ];
     }
 }
