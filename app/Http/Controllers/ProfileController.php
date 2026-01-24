@@ -2,44 +2,59 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function index()
+    /**
+     * Display the user's profile form.
+     */
+    public function edit(Request $request): View
     {
-        return view('pages.profile.index');
+        return view('profile.edit', [
+            'user' => $request->user(),
+        ]);
     }
 
-    public function activities()
+    /**
+     * Update the user's profile information.
+     */
+    public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $recentUsers = \App\Models\User::latest()->take(5)->get()->map(function ($user) {
-            return (object) [
-                'type' => 'User Registration',
-                'message' => "New user registered: {$user->name} ({$user->roles})",
-                'created_at' => $user->created_at,
-                'icon' => 'fas fa-user-plus',
-                'color' => 'primary'
-            ];
-        });
+        $request->user()->fill($request->validated());
 
-        $recentProducts = \App\Models\Product::latest()->take(5)->get()->map(function ($product) {
-            return (object) [
-                'type' => 'Product Added',
-                'message' => "New product added: {$product->name}",
-                'created_at' => $product->created_at,
-                'icon' => 'fas fa-box',
-                'color' => 'success'
-            ];
-        });
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
 
-        $activities = $recentUsers->merge($recentProducts)->sortByDesc('created_at')->values();
+        $request->user()->save();
 
-        return view('pages.profile.activities', compact('activities'));
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-    public function settings()
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
     {
-        return view('pages.profile.settings');
+        $request->validateWithBag('userDeletion', [
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
     }
 }
