@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'somthing',
             'email' => 'admin1@gmail.com',
             'password' => 'admin123',
-            'roles' => 'admin',
+            'role' => 'admin',
         ]);
 
 
         $this->call([
-            ProductSeeder::class,
+            // ProductSeeder::class,
         ]);
     }
 }

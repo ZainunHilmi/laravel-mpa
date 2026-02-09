@@ -33,12 +33,12 @@ class UserController extends Controller
         $data = $request->validated();
         $data['password'] = Hash::make($request->password);
         \App\Models\User::create($data);
-        return redirect()->route('user.index')->with('success', 'User successfully created');
+        return redirect()->route('admin.user.index')->with('success', 'User successfully created');
     }
 
     public function show($id)
     {
-        return redirect()->route('user.index');
+        return redirect()->route('admin.user.index');
     }
 
     public function edit($id)
@@ -51,12 +51,12 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $user->update($data);
-        return redirect()->route('user.index')->with('success', 'User successfully updated');
+        return redirect()->route('admin.user.index')->with('success', 'User successfully updated');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        return redirect()->route('user.index')->with('success', 'User successfully deleted');
+        return redirect()->route('admin.user.index')->with('success', 'User successfully deleted');
     }
 }

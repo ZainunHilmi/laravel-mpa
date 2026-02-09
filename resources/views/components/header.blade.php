@@ -207,13 +207,13 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-title">Logged in 5 min ago</div>
-                <a href="{{ route('profile.index') }}" class="dropdown-item has-icon">
+                <a href="{{ route('profile.edit') }}" class="dropdown-item has-icon">
                     <i class="far fa-user"></i> Profile
                 </a>
-                <a href="{{ route('profile.activities') }}" class="dropdown-item has-icon">
+                <a href="#" class="dropdown-item has-icon">
                     <i class="fas fa-bolt"></i> Activities
                 </a>
-                <a href="{{ route('profile.settings') }}" class="dropdown-item has-icon">
+                <a href="#" class="dropdown-item has-icon">
                     <i class="fas fa-cog"></i> Settings
                 </a>
                 <div class="dropdown-divider"></div>

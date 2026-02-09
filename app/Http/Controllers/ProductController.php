@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -27,6 +28,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|min:3|unique:products',
+            'sku' => 'required|unique:products',
             'description' => 'nullable|string',
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
@@ -36,6 +38,7 @@ class ProductController extends Controller
 
         $product = new \App\Models\Product;
         $product->name = $request->name;
+        $product->sku = $request->sku;
         $product->description = $request->description;
         $product->price = (int) $request->price;
         $product->stock = (int) $request->stock;
@@ -51,7 +54,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return redirect()->route('product.index')->with('success', 'Product successfully created');
+        return redirect()->route('admin.product.index')->with('success', 'Product successfully created');
     }
 
     public function edit($id)
@@ -66,6 +69,7 @@ class ProductController extends Controller
 
         $request->validate([
             'name' => 'required|min:3|unique:products,name,' . $id,
+            'sku' => 'required|unique:products,sku,' . $id,
             'description' => 'nullable|string',
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
@@ -75,6 +79,7 @@ class ProductController extends Controller
 
         $data = [
             'name' => $request->name,
+            'sku' => $request->sku,
             'description' => $request->description,
             'price' => (int) $request->price,
             'stock' => (int) $request->stock,
@@ -95,13 +100,13 @@ class ProductController extends Controller
         }
 
         $product->update($data);
-        return redirect()->route('product.index')->with('success', 'Product successfully updated');
+        return redirect()->route('admin.product.index')->with('success', 'Product successfully updated');
     }
 
     public function destroy($id)
     {
         $product = \App\Models\Product::findOrFail($id);
         $product->delete();
-        return redirect()->route('product.index')->with('success', 'Product successfully deleted');
+        return redirect()->route('admin.product.index')->with('success', 'Product successfully deleted');
     }
 }
